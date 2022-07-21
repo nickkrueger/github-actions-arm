@@ -46,5 +46,16 @@ jobs:
           template: ./arm-templates/resourcegroup.json
           deploymentName: rg-githubactions #Does not need to be the RG name
 
+      # Deploy ARM Template for storage account to RG
+      - name: Deploy Storage Account to rg-githubactions
+        uses: Azure/arm-deploy@v1
+        with:
+          scope: resourcegroup
+          subscriptionId: 09306da1-aefe-4b06-97fd-b410eab9b840 # NPK-NonProd
+          template: ./arm-templates/storageaccount.json
+          parameters: ./arm-templates/storageaccount.parameters.json
+          deploymentName: deploystorageaccount
+          deploymentMode: incremental
+
 
 
