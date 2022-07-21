@@ -51,6 +51,7 @@ jobs:
         uses: Azure/arm-deploy@v1
         with:
           scope: resourcegroup
+          resourceGroupName: rg-githubactions
           subscriptionId: 09306da1-aefe-4b06-97fd-b410eab9b840 # NPK-NonProd
           template: ./arm-templates/storageaccount.json
           parameters: ./arm-templates/storageaccount.parameters.json
