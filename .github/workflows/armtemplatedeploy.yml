@@ -11,6 +11,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  resource_group_name: rg-githubactions
+  location: "CentralUS"
+  subscriptionId: 09306da1-aefe-4b06-97fd-b410eab9b840
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -27,36 +31,36 @@ jobs:
       - name: Azure Login
         uses: Azure/login@v1
         with:
-          creds: ${{secrets.AZURE_CREDENTIALS_NPKPROD}}
+          creds: ${{ secrets.AZURE_CREDENTIALS_NPKPROD }}
       
       # Run Azure CLI command to manaully run a deployment
-      # - name: Deploy Resource Group rg-githubactions with AZ CLI
+      # - name: Deploy Resource Group ${{ env.resource_group_name }} with AZ CLI
       #   uses: Azure/cli@v1
       #   with: 
       #     inlinescript: |
       #       az deployment sub create --location "CentralUS" --template-file "./arm-templates/resourcegroup.json"
 
       # Deploy ARM Template
-      - name: Deploy Resource Group rg-githubactions
+      - name: Deploy Resource Group ${{ env.resource_group_name }}
         uses: Azure/arm-deploy@v1
         with:
           scope: subscription
-          subscriptionId: 09306da1-aefe-4b06-97fd-b410eab9b840 # NPK-NonProd
+          subscriptionId: ${{ env.subscription_Id }} # NPK-NonProd
           region: CentralUS
           template: ./arm-templates/resourcegroup.json
           parameters:
-            location="CentralUS"
-            resourceGroupName=rg-githubactions
-          deploymentName: rg-githubactions #Does not need to be the RG name
+            location=${{ env.location }}
+            resourceGroupName=${{ env.resource_group_name }}
+          deploymentName: ${{ env.resource_group_name }} #Does not need to be the RG name
 
       # Deploy ARM Template for storage account to RG
-      - name: Deploy Storage Account to rg-githubactions
+      - name: Deploy Storage Account to ${{ env.resource_group_name }}
         uses: Azure/arm-deploy@v1
         id: storageAccountDeploy
         with:
           scope: resourcegroup
-          resourceGroupName: rg-githubactions
-          subscriptionId: 09306da1-aefe-4b06-97fd-b410eab9b840 # NPK-NonProd
+          resourceGroupName: ${{ env.resource_group_name }}
+          subscriptionId: ${{ env.subscription_Id }} # NPK-NonProd
           template: ./arm-templates/storageaccount.json
           parameters: 
             ./arm-templates/storageaccount.parameters.json
@@ -73,11 +77,12 @@ jobs:
         id: virtualMachineDeploy
         with:
           scope: resourcegroup
-          resourceGroupName: rg-githubactions
-          subscriptionId: 09306da1-aefe-4b06-97fd-b410eab9b840 # NPK-NonProd
+          resourceGroupName: ${{ env.resource_group_name }}
+          subscriptionId: ${{ env.subscription_Id }} # NPK-NonProd
           template: ./arm-templates/virtualmachine.json
           parameters: 
             adminPassword=${{ secrets.UBUNTU_ADMIN_PASSWORD }}
+            location=${{ env.location }}
           deploymentName: deployvirtualmachine
           deploymentMode: incremental
 
