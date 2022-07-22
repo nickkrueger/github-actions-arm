@@ -67,7 +67,7 @@ jobs:
 
       - run: echo ${{ steps.storageAccountDeploy.outputs.BlobUri }}
 
-       # Deploy Virtual Machine
+       # Deploy Virtual Machine to RG
       - name: Deploy Virtual Machine
         uses: Azure/arm-deploy@v1
         id: virtualMachineDeploy
