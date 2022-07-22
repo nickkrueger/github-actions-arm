@@ -77,7 +77,7 @@ jobs:
           subscriptionId: 09306da1-aefe-4b06-97fd-b410eab9b840 # NPK-NonProd
           template: ./arm-templates/virtualmachine.json
           parameters: 
-            adminPassword="P@ssword1234!"
+            adminPassword=${{ secrets.UBUNTU_ADMIN_PASSWORD }}
           deploymentName: deployvirtualmachine
           deploymentMode: incremental
 
